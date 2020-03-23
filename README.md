@@ -40,8 +40,9 @@ enum Section {
     case misc
 }
 ```
-Please note: You need to have one news source selected for the topical articles to show up. 
+Please note: You need to have atleast one news source selected for the topical articles to show up. 
 
 Selected sources (news sites and topics) are persisted on device. (```UserDefaults```). There is also an onboarding flow where if the user has no news sources selected, the app takes you through how to add a news source and get started. 
+
 
 
