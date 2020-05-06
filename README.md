@@ -32,7 +32,7 @@ GoodNews V1.2 brings following new features / changes:
 
 4. Tapping on any article, takes you to the respective website. The browser gets more features with website loading progress indicator, reload button. 
 
-
+5. Fixed a bug that was present in v1.1 where images wouldn't load properly. With V1.2, I have implemented all new image caching system and you will find images to load up quickly and smoothly. 
 
 <h3>GoodNews is a simple and minimal news app for iPhone. The app uses <a href="https://newsapi.org">NewsAPI</a> to fetch latest news.</h3>
 
