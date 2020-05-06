@@ -157,7 +157,7 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let section = fetchedTopicSection[indexPath.section].articles
+        let section = newDomainArticles
         let destWebViewController = DetailArticleWebViewController()
         destWebViewController.article = section[indexPath.row]
         destWebViewController.hidesBottomBarWhenPushed = true
@@ -179,6 +179,7 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
             networkManager.fetchTopicalArticles(topics: [topic]) { [weak self] (section) in
                     guard let strongSelf = self else { return }
                     strongSelf.fetchedTopicSection = [section]
+                    strongSelf.newDomainArticles = section.articles
                     DispatchQueue.main.async {
                         strongSelf.snapshot.deleteAllItems()
                         strongSelf.snapshot.appendSections(strongSelf.fetchedTopicSection)
