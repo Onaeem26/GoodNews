@@ -5,10 +5,19 @@
 </p>
 <h1 align="center">GoodNews</h1>
 
-![iOS Build](https://camo.githubusercontent.com/c86345972e600bcb5df94a29e717be86260736d7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f694f532d31332e302b2d626c75652e737667) ![Swift Version](https://camo.githubusercontent.com/667f6dfa9824258f1bea9b0cefb960b3f983092f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f53776966742d352e312d627269676874677265656e2e737667) 
+<p align="center">
+    <img src="https://img.shields.io/badge/version-1.2-red.svg" />
+    <img src="https://img.shields.io/badge/iOS-13.0%2B-blue.svg" />
+    <img src="https://img.shields.io/badge/Swift-5.0-ff69b4.svg" />
+    <a href="https://twitter.com/madebyon">
+        <img src="https://img.shields.io/badge/contact-%40madebyon-lightgrey" alt="Twitter: @madebyon" />
+    </a>
+</p>
+
  <p align="center">
   <img width="1200" height="600" src="https://github.com/Onaeem26/GoodNews/blob/master/gnpromobanner.jpg">
 </p>
+
 
 <h2> GoodNews V1.2 Update: </h2>
 I am excited to announce the release of GoodNews Version 1.2. V1.2 brings some neat new features, along with refining some of the existing ones. 
