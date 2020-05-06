@@ -23,4 +23,5 @@ extension UserDefaults {
 extension Notification.Name {
      static let onboardingStatusNotification = Notification.Name("onboardingStatusNotification")
      static let addTopicNotification = Notification.Name("AddTopicNotification")
+     static let addDomainNotification = Notification.Name("AddDomainNotification")
 }

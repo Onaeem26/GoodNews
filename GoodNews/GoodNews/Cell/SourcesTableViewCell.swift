@@ -12,7 +12,6 @@ class SourcesTableViewCell: UITableViewCell {
 
     let sourcesLabel : UILabel = {
        let label = UILabel()
-        //label.backgroundColor = .yellow
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Hello"
@@ -65,14 +64,7 @@ class SourcesTableViewCell: UITableViewCell {
         layoutViews()
     }
 
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//        if selected && self.selectedDot.isHidden {
-//            self.selectedDot.isHidden = false
-//        }else if selected && !self.selectedDot.isHidden {
-//            self.selectedDot.isHidden = true
-//        }
-//    }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

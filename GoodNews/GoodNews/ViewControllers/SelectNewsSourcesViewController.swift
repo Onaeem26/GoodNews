@@ -55,6 +55,17 @@ class SelectNewsSourcesViewController: UIViewController {
          return button
      }()
     
+    let domainButton: UIButton = {
+         let button = UIButton(type: .system)
+         button.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+         button.setTitle("Domain", for: .normal)
+         button.translatesAutoresizingMaskIntoConstraints = false
+         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+         button.setTitleColor(GNUIConfiguration.textColor, for: .normal)
+         button.layer.cornerRadius = 20
+         button.addTarget(self, action: #selector(handleDomainButton), for: .touchUpInside)
+         return button
+     }()
     weak var glideManager : Glide?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +85,13 @@ class SelectNewsSourcesViewController: UIViewController {
         selectTopicVC.glideManager = manager
         self.navigationController?.pushViewController(selectTopicVC, animated: true)
         
-        
+    }
+    
+    @objc func handleDomainButton() {
+        guard let manager = glideManager else { return }
+        let selectDomainVC = SelectDomainViewController()
+        selectDomainVC.glideManager = manager
+        self.navigationController?.pushViewController(selectDomainVC, animated: true)
     }
     
     @objc func handleNewsSourceButton() {
@@ -99,6 +116,7 @@ class SelectNewsSourcesViewController: UIViewController {
         view.addSubview(descriptionText)
         view.addSubview(topicButton)
         view.addSubview(newsSourceButton)
+        view.addSubview(domainButton)
     }
     
     func layoutViews() {
@@ -121,6 +139,11 @@ class SelectNewsSourcesViewController: UIViewController {
         newsSourceButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         newsSourceButton.heightAnchor.constraint(equalToConstant: 58).isActive = true
         newsSourceButton.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        
+        domainButton.topAnchor.constraint(equalTo: newsSourceButton.bottomAnchor, constant: 12).isActive = true
+        domainButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        domainButton.heightAnchor.constraint(equalToConstant: 58).isActive = true
+        domainButton.widthAnchor.constraint(equalToConstant: 250).isActive = true
     }
 }
 

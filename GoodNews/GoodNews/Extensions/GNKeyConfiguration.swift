@@ -13,4 +13,5 @@ struct GNKeyConfiguration {
     static let onboardingStatus = "onboardingStatus"
     static let topicalStatus = "topicalStatus"
     static let topicFetchKey = "topicFetchKey"
+    static let domainFetchKey = "domainFetchKey"
 }

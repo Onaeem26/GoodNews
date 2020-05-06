@@ -22,6 +22,9 @@
 		F5634FC3241D7B180004193C /* NewsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5634FC2241D7B180004193C /* NewsSource.swift */; };
 		F5708497241F8005003723B7 /* UserDefaultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5708496241F8005003723B7 /* UserDefaultExtension.swift */; };
 		F5708499241F84EA003723B7 /* GNKeyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5708498241F84EA003723B7 /* GNKeyConfiguration.swift */; };
+		F5837CC124633E5100CAB792 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5837CC024633E5100CAB792 /* ImageLoader.swift */; };
+		F5837CC324633E5C00CAB792 /* UIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5837CC224633E5C00CAB792 /* UIImageLoader.swift */; };
+		F5837CC524633E7E00CAB792 /* SelectDomainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5837CC424633E7E00CAB792 /* SelectDomainViewController.swift */; };
 		F5887FC2241BAC2400E82935 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5887FC1241BAC2400E82935 /* AppDelegate.swift */; };
 		F5887FC4241BAC2400E82935 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5887FC3241BAC2400E82935 /* SceneDelegate.swift */; };
 		F5887FC6241BAC2400E82935 /* ForYouViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5887FC5241BAC2400E82935 /* ForYouViewController.swift */; };
@@ -84,6 +87,9 @@
 		F5634FC2241D7B180004193C /* NewsSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsSource.swift; sourceTree = "<group>"; };
 		F5708496241F8005003723B7 /* UserDefaultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultExtension.swift; sourceTree = "<group>"; };
 		F5708498241F84EA003723B7 /* GNKeyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GNKeyConfiguration.swift; sourceTree = "<group>"; };
+		F5837CC024633E5100CAB792 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		F5837CC224633E5C00CAB792 /* UIImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageLoader.swift; sourceTree = "<group>"; };
+		F5837CC424633E7E00CAB792 /* SelectDomainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDomainViewController.swift; sourceTree = "<group>"; };
 		F5887FBE241BAC2400E82935 /* GoodNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoodNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5887FC1241BAC2400E82935 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F5887FC3241BAC2400E82935 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -225,6 +231,7 @@
 		F5887FF5241BB1A100E82935 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				F5837CC424633E7E00CAB792 /* SelectDomainViewController.swift */,
 				F5887FF1241BAE9600E82935 /* TabViewController.swift */,
 				F5887FC5241BAC2400E82935 /* ForYouViewController.swift */,
 				F51EE27724222DF0008CA5CD /* DetailArticleWebViewController.swift */,
@@ -274,6 +281,8 @@
 				F50B9EF02420DA940094ED35 /* SelfConfiguringCell.swift */,
 				F50B9EF42421109B0094ED35 /* ImageViewExtensions.swift */,
 				F598171724268170007C03A0 /* DateExtension.swift */,
+				F5837CC224633E5C00CAB792 /* UIImageLoader.swift */,
+				F5837CC024633E5100CAB792 /* ImageLoader.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -413,6 +422,7 @@
 				F5887FF2241BAE9600E82935 /* TabViewController.swift in Sources */,
 				F598171824268170007C03A0 /* DateExtension.swift in Sources */,
 				F59DE136241BB9360030B88F /* Glide.swift in Sources */,
+				F5837CC524633E7E00CAB792 /* SelectDomainViewController.swift in Sources */,
 				F51EE28424254B26008CA5CD /* Channel.swift in Sources */,
 				F598171C24276EA3007C03A0 /* ChannelCell.swift in Sources */,
 				F5634FC3241D7B180004193C /* NewsSource.swift in Sources */,
@@ -437,10 +447,12 @@
 				F5A876C3241E408F00CE90C4 /* SourcesTableViewCell.swift in Sources */,
 				F50B9EF52421109B0094ED35 /* ImageViewExtensions.swift in Sources */,
 				F51255DD241E2E1D00CB006B /* NetworkProperties.swift in Sources */,
+				F5837CC124633E5100CAB792 /* ImageLoader.swift in Sources */,
 				F5F1082B241D046D00483252 /* SelectSourceViewController.swift in Sources */,
 				F50B9EF12420DA940094ED35 /* SelfConfiguringCell.swift in Sources */,
 				F51EE28224253969008CA5CD /* SourcesViewController.swift in Sources */,
 				F5C9CE23241FCCD500B820FF /* Article.swift in Sources */,
+				F5837CC324633E5C00CAB792 /* UIImageLoader.swift in Sources */,
 				F5887FC6241BAC2400E82935 /* ForYouViewController.swift in Sources */,
 				F5887FC2241BAC2400E82935 /* AppDelegate.swift in Sources */,
 				F5887FF4241BB0F100E82935 /* SettingsViewController.swift in Sources */,

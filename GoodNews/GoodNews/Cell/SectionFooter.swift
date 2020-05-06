@@ -21,7 +21,7 @@ class SectionFooter: UICollectionReusableView {
         super.init(frame: frame)
 
         
-        button.setTitle("See All Topics", for: .normal)
+        button.setTitle("See All Domains", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.addTarget(self, action: #selector(handleSeeAllTopicsbutton), for: .touchUpInside)
         button.titleLabel?.font = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 12, weight: .medium))

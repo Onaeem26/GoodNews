@@ -52,6 +52,11 @@ class FeaturedArticleCell: UICollectionViewCell, SelfConfiguringCell {
         layoutViews()
     }
     
+    override func prepareForReuse() {
+         self.backgroundImageView.image = nil
+         self.backgroundImageView.cancelImageLoad()
+     }
+    
 //    func setupViews() {
 //        addSubview(backgroundImageView)
 //        addSubview(articleName)
@@ -104,7 +109,7 @@ class FeaturedArticleCell: UICollectionViewCell, SelfConfiguringCell {
     
     func configure(with article: Article) {
         articleName.text = article.title
-        backgroundImageView.loadImageUsingCacheWithUrlString(urlString: article.urlToImage ?? "")
+        backgroundImageView.loadImage(at: article.urlToImage ?? "")
         articlePublishedDate.text = Date().getElapsedInterval(date: article.publishedAt ?? "")
     }
 

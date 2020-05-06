@@ -13,7 +13,7 @@ class MiscArticleCell: UICollectionViewCell, SelfConfiguringCell {
     
     let thumbnailImageView: UIImageView = {
        let imageView = UIImageView()
-        imageView.backgroundColor = .black
+        imageView.backgroundColor = .lightGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 10
         imageView.contentMode = .scaleAspectFill
@@ -63,6 +63,7 @@ class MiscArticleCell: UICollectionViewCell, SelfConfiguringCell {
          return label
      }()
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .white//UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.0)
@@ -72,10 +73,14 @@ class MiscArticleCell: UICollectionViewCell, SelfConfiguringCell {
         layoutViews()
     }
     
-    
+    override func prepareForReuse() {
+        self.thumbnailImageView.image = nil
+        self.thumbnailImageView.cancelImageLoad()
+        
+    }
     
     func configure(with article: Article) {
-        thumbnailImageView.loadImageUsingCacheWithUrlString(urlString: article.urlToImage ?? "")
+        thumbnailImageView.loadImage(at: article.urlToImage ?? "")
         articleName.text = article.title
         articleDescription.text = article.description
         articleSource.text = article.source["name"] ?? "Source not available"

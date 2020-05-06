@@ -12,6 +12,7 @@ enum sectionType {
     
     case NewsSources
     case Topics
+    case Domains
 }
 struct Channel: Hashable {
     let identifier: UUID = UUID() 

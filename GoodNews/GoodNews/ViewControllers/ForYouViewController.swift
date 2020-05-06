@@ -42,6 +42,17 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
         imageView.image = UIImage(named: "newspapericon")
         return imageView
     }()
+    
+    private lazy var activityIndicator : UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.color = GNUIConfiguration.mainForegroundColor
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    
+    
+    
     let networkManager = NewsNetworkManager()
     var onboardingStatus : Bool = false
     var onboardingViews: [UIView] = []
@@ -73,39 +84,37 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
        
         
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .white//UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.0)
+        collectionView.backgroundColor = .white
         setupUIRefreshControl(with: collectionView)
         addNotificationObserver()
         onboardingFlowUpdate()
-
-       // loadData()
+        
     }
 
     func loadData() {
-            let selectedSources = UserDefaults.standard.object([NewsSource : Bool].self, with: GNKeyConfiguration.selectedSourcesFetch)
-            guard let selected = selectedSources else { return }
-            let fetchedTopics = UserDefaults.standard.object(forKey: GNKeyConfiguration.topicFetchKey) as? [String]
-        
-            networkManager.fetchForYouArticles(sources: selected, topic: fetchedTopics) { (sections) in
-                self.fetchedSections = sections
-                DispatchQueue.main.async {
-                    self.createDataSource()
-                    self.reloadData()
-                }
+        activityIndicator.startAnimating()
+        let selectedSources = UserDefaults.standard.object([NewsSource : Bool].self, with: GNKeyConfiguration.selectedSourcesFetch)
+        guard let selected = selectedSources else { return }
+        let fetchedDomains = UserDefaults.standard.object(forKey: GNKeyConfiguration.domainFetchKey) as? [String]
+    
+        networkManager.fetchForYouArticles(sources: selected, domains: fetchedDomains) { (sections) in
+            self.fetchedSections = sections
+            DispatchQueue.main.async {
+                self.createDataSource()
+                self.reloadData()
             }
+        }
     }
     
     func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with article: Article, for indexPath: IndexPath) -> T {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseIdentifier, for: indexPath) as? T else {
             fatalError("Unable to dequeue \(cellType)")
         }
-
         cell.configure(with: article)
         return cell
     }
     
-   // func configurHeadrer
-    
+
     func createDataSource() {
         dataSource = UICollectionViewDiffableDataSource<ForYouSection, Article>(collectionView: collectionView) { collectionView, indexPath, article in
             switch self.fetchedSections[indexPath.section].section {
@@ -157,6 +166,7 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
         }
 
         dataSource?.apply(snapshot)
+        activityIndicator.stopAnimating()
     }
     
     func createCompositionalLayout() -> UICollectionViewLayout {
@@ -200,8 +210,6 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
 
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         
-       // layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
-        
         let layoutSectionHeader = createSectionHeader()
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
     
@@ -228,16 +236,25 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
     }
     
     func createTopicalSection(using section: ForYouSection) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.48), heightDimension: .fractionalHeight(1))
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 12, bottom: 0, trailing: 0)
-
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.48), heightDimension: .estimated(80))
-        let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
+        
+        let itemSize2 = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.48), heightDimension: .fractionalHeight(1))
+        let layoutItem2 = NSCollectionLayoutItem(layoutSize: itemSize2)
+        layoutItem2.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 12, bottom: 0, trailing: 0)
+        
+        let subGroup1Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(220))
+        let subGroup1 = NSCollectionLayoutGroup.horizontal(layoutSize: subGroup1Size, subitems: [layoutItem])
+        
+        let subGroup2Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(220))
+        let subGroup2 = NSCollectionLayoutGroup.horizontal(layoutSize: subGroup2Size, subitems: [layoutItem2])
+        
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(440))
+        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [subGroup1, subGroup2])
 
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-        layoutSection.orthogonalScrollingBehavior = .continuous
+        layoutSection.orthogonalScrollingBehavior = .groupPaging
         
         let layoutSectionHeader = createSectionHeader()
         let layoutSectionFooter = createSectionFooter()
@@ -263,15 +280,11 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Index Path Tapped", indexPath.row)
         let section = fetchedSections[indexPath.section].articles
-        print("Article",section[indexPath.row].title)
         let destWebViewController = DetailArticleWebViewController()
         destWebViewController.article = section[indexPath.row]
         destWebViewController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(destWebViewController, animated: true)
-        
-    
     }
     
     func setupUIRefreshControl(with collectionView: UICollectionView) {
@@ -284,10 +297,9 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
     @objc func handleRefresh() {
         let selectedSources = UserDefaults.standard.object([NewsSource : Bool].self, with: GNKeyConfiguration.selectedSourcesFetch)
         guard let selected = selectedSources else { return }
-        let fetchedTopics = UserDefaults.standard.object(forKey: GNKeyConfiguration.topicFetchKey) as? [String]
-        print(fetchedTopics)
+        let fetchedDomains = UserDefaults.standard.object(forKey: GNKeyConfiguration.domainFetchKey) as? [String]
         
-        networkManager.fetchForYouArticles(sources: selected, topic: fetchedTopics) { (sections) in
+        networkManager.fetchForYouArticles(sources: selected, domains: fetchedDomains) { (sections) in
             self.fetchedSections = sections
             DispatchQueue.main.async {
                 
@@ -310,9 +322,8 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
     }
     
 
-    //REMOVE THE CURRENT VIEWS
-    //ADD THE COLLECTIONVIEW WHICH WILL SHOWCASE ALL THE NEW ARTICLES FROM THE SOURCES SELECTED
-    //ADD TOPIC FEATURE AS WELL TO THE SAME ARRAY?
+///    REMOVE THE CURRENT VIEWS
+///    ADD THE COLLECTIONVIEW WHICH WILL SHOWCASE ALL THE NEW ARTICLES FROM THE SOURCES SELECTED
     
     @objc func onboardingFlowUpdate() {
         onboardingStatus = (UserDefaults.standard.bool(forKey: GNKeyConfiguration.onboardingStatus))
@@ -323,13 +334,15 @@ class ForYouViewController: UIViewController, UICollectionViewDelegate, SectionF
                    view.removeFromSuperview()
                 }
                self.view.addSubview(self.collectionView)
+               activityIndicator.frame = CGRect(x: (self.view.frame.width / 2), y: 140, width: 10, height: 10)
+               self.collectionView.addSubview(activityIndicator)
                self.setupNewsSourceCardController()
                self.view.layoutIfNeeded()
                
             if dataSource == nil {
                  loadData()
             }else {
-                print("Data source is already present just refresh the data")
+                ///Data source is already present just refresh the data
                 newsSourcesDidGetUpdated()
             }
                

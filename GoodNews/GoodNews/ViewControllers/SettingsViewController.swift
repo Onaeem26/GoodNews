@@ -16,7 +16,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     
     let data = [Setting(title: "Twitter - @madebyon", link: "https://www.twitter.com/madebyon"),
                 Setting(title: "Github - @onaeem26", link: "https://www.github.com/onaeem26"),
-                Setting(title: "Blog - ExploringSwift", link: "https://www.exploringswift.com")
+                Setting(title: "Blog - ExploringSwift", link: "https://exploringswift.com")
     
     
     ]
@@ -29,7 +29,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
           return imageView
       }()
     
-    let descriptionText: UILabel = {
+    let titleText: UILabel = {
          let label = UILabel()
          label.translatesAutoresizingMaskIntoConstraints = false
          label.numberOfLines = 0
@@ -38,6 +38,16 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
          label.text = "GoodNews"
          return label
      }()
+    
+    let descriptionText: UILabel = {
+           let label = UILabel()
+           label.translatesAutoresizingMaskIntoConstraints = false
+           label.numberOfLines = 0
+           label.textAlignment = .center
+           label.font = UIFont.systemFont(ofSize: 12, weight: .heavy)
+           label.text = "V1.2"
+           return label
+       }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,9 +69,15 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         view.addSubview(tableView)
         view.addSubview(newspaperImage)
+        view.addSubview(titleText)
         view.addSubview(descriptionText)
         
-        descriptionText.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -250).isActive = true
+        titleText.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -250).isActive = true
+        titleText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        titleText.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        titleText.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        
+        descriptionText.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -220).isActive = true
         descriptionText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         descriptionText.heightAnchor.constraint(equalToConstant: 100).isActive = true
         descriptionText.widthAnchor.constraint(equalToConstant: 250).isActive = true

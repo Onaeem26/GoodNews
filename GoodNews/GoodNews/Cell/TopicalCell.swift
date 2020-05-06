@@ -14,8 +14,7 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
     
     let backgroundImageView: UIImageView = {
        let imageView = UIImageView()
-        //imageView.backgroundColor = .red
-        imageView.alpha = 0.5
+        imageView.alpha = 1
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 10
         imageView.contentMode = .scaleAspectFill
@@ -27,7 +26,7 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
        let label = UILabel()
         label.text = "This is some sort of a headline"
         //label.backgroundColor = .red
-        label.textColor = .white
+        label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -45,7 +44,7 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .black
+        contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 10
         contentView.layer.masksToBounds = true
         setupViews()
@@ -58,10 +57,15 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
        // addSubview(articlePublishedDate)
     }
     
+    override func prepareForReuse() {
+        self.backgroundImageView.image = nil
+        self.backgroundImageView.cancelImageLoad()
+    }
+    
     func layoutViews() {
         bringSubviewToFront(articleName)
         backgroundImageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        backgroundImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        backgroundImageView.heightAnchor.constraint(equalToConstant: 140).isActive = true
         backgroundImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         backgroundImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         
@@ -70,7 +74,7 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
 //        articlePublishedDate.widthAnchor.constraint(equalToConstant: 100).isActive = true
 //        articlePublishedDate.heightAnchor.constraint(equalToConstant: 16).isActive = true
         
-        articleName.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8).isActive = true
+        articleName.topAnchor.constraint(equalTo: backgroundImageView.bottomAnchor, constant: 8).isActive = true
         articleName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
         articleName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -12).isActive = true
         articleName.heightAnchor.constraint(equalToConstant: 60).isActive = true
@@ -83,7 +87,7 @@ class TopicalCell: UICollectionViewCell, SelfConfiguringCell {
     
     func configure(with article: Article) {
         articleName.text = article.title
-        backgroundImageView.loadImageUsingCacheWithUrlString(urlString: article.urlToImage ?? "")
+        backgroundImageView.loadImage(at: article.urlToImage ?? "")
     }
 
 }

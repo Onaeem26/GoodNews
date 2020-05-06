@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SelectTopicViewController : UIViewController{
+class SelectTopicViewController : UIViewController {
     
     let titleText : UILabel = {
         let titleText = UILabel()
@@ -22,7 +22,7 @@ class SelectTopicViewController : UIViewController{
     
     let descriptionText : UILabel = {
         let titleText = UILabel()
-        titleText.text = "Add any topic you wish to get news on, for eg: UEFA, Apple etc"
+        titleText.text = "Add any specific topic you wish to get news on, for eg: Apple, UEFA"
         titleText.font = titleText.font.withSize(12)
         titleText.textColor = .secondaryLabel
         titleText.numberOfLines = 0

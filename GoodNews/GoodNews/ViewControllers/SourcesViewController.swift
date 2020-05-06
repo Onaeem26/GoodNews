@@ -13,8 +13,8 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
     let tableView = UITableView()
     var selectedNewsSourcesList = [NewsSource]()
     var fetchedTopic = [String]()
+    var fetchedDomains = [String]()
     var selectedSources: [NewsSource : Bool] = [:]
-    
     var allSourcesArray = [Channel]()
     
     override func viewDidLoad() {
@@ -34,6 +34,7 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
     func fetchNewsSources() {
         selectedNewsSourcesList.removeAll()
         fetchedTopic.removeAll()
+        fetchedDomains.removeAll()
         selectedSources = UserDefaults.standard.object([NewsSource:Bool].self, with: GNKeyConfiguration.selectedSourcesFetch) ?? [:]
         let selectedTopics = UserDefaults.standard.object(forKey: GNKeyConfiguration.topicFetchKey) as? [String] ?? []
         for source in selectedSources.keys {
@@ -43,11 +44,16 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
         for topic in selectedTopics {
             fetchedTopic.append(topic)
         }
+        let selectedDomains = UserDefaults.standard.object(forKey: GNKeyConfiguration.domainFetchKey) as? [String] ?? []
+        for domain in selectedDomains {
+             fetchedDomains.append(domain)
+         }
         
         let newsSources = Channel(sectionType: .NewsSources, sites: selectedNewsSourcesList, topics: [])
         let topicsSources = Channel(sectionType: .Topics, sites: [], topics: fetchedTopic)
+        let domainSources = Channel(sectionType: .Domains, sites: [], topics: fetchedDomains)
         
-        allSourcesArray = [newsSources, topicsSources]
+        allSourcesArray = [newsSources, topicsSources, domainSources]
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -81,12 +87,14 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if allSourcesArray[section].sectionType == .NewsSources {
             return allSourcesArray[section].sites.count
+        }else if allSourcesArray[section].sectionType == .Topics {
+            return allSourcesArray[section].topics.count
         }else {
             return allSourcesArray[section].topics.count
         }
@@ -102,11 +110,16 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
             let firstAlphabet = String(siteName.first ?? "A").uppercased()
             cell.alphabetLabel.text = firstAlphabet
             cell.sourcesLabel.text = siteName
-        }else {
+        }else if source.sectionType == .Topics {
             let topicName = source.topics[indexPath.row]
             let firstAlphabet = String(topicName.first ?? "A").uppercased()
             cell.alphabetLabel.text = firstAlphabet
             cell.sourcesLabel.text = topicName
+        }else {
+            let domainName = source.topics[indexPath.row]
+            let firstAlphabet = String(domainName.first ?? "A").uppercased()
+            cell.alphabetLabel.text = firstAlphabet
+            cell.sourcesLabel.text = domainName
         }
         
         return cell
@@ -127,8 +140,10 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if section == 0 {
             label.text = "NEWS SITES"
-        }else {
+        }else if section == 1 {
             label.text = "TOPICS"
+        }else {
+            label.text = "DOMAINS"
         }
         return view
     }
@@ -163,7 +178,14 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
                UserDefaults.standard.set(updatedTopicsSection, forKey: GNKeyConfiguration.topicFetchKey)
                
               
-           }else {
+           }else if sourcesSection.sectionType == .Domains {
+           
+                self.allSourcesArray[indexPath.section].topics.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                let updatedTopicsSection = self.allSourcesArray[indexPath.section].topics
+                UserDefaults.standard.set(updatedTopicsSection, forKey: GNKeyConfiguration.domainFetchKey)
+           
+           } else {
                let removedSource = self.allSourcesArray[indexPath.section].sites.remove(at: indexPath.row)
             
                let remainingSites = self.allSourcesArray[indexPath.section].sites
@@ -187,6 +209,14 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
             let detailTopicViewController = SeeAllTopicalArticlesViewController()
             detailTopicViewController.topic = topicSelected
             detailTopicViewController.title = topicSelected
+            self.navigationController?.pushViewController(detailTopicViewController, animated: true)
+        }
+        
+        if sourcesSection.sectionType == .Domains {
+            let domainSelected = self.allSourcesArray[indexPath.section].topics[indexPath.row]
+            let detailTopicViewController = SeeAllTopicalArticlesViewController()
+            detailTopicViewController.domain = domainSelected
+            detailTopicViewController.title = domainSelected
             self.navigationController?.pushViewController(detailTopicViewController, animated: true)
         }
     }

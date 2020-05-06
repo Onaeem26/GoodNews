@@ -18,7 +18,7 @@ struct Article: Decodable, Hashable {
 }
 
 struct ArticleList : Decodable {
-    let articles : [Article]
+    var articles : [Article]
 }
 
 
@@ -31,7 +31,7 @@ enum Section {
 struct ForYouSection: Hashable {
     let  identifier: UUID = UUID() 
     let  section: Section
-    let  articles: [Article]
+    var  articles: [Article]
     
     func hash(into hasher: inout Hasher) {
         return hasher.combine(identifier)
@@ -44,7 +44,7 @@ struct ForYouSection: Hashable {
         case .misc:
             return "Top Headlines"
         case .topical:
-            return "Topical"
+            return "Chosen Websites"
             
         }
     }
@@ -60,13 +60,13 @@ struct ForYouSection: Hashable {
         case .misc:
             return "Perfectly curated top stories from your selections"
         case .topical:
-            return "Latest from your added topics"
+            return "Latest from your added domains"
             
         }
     }
 
     static func == (lhs: ForYouSection, rhs: ForYouSection) -> Bool {
-        return lhs.identifier == rhs.identifier
+        return lhs.identifier == rhs.identifier && lhs.articles == rhs.articles && lhs.section == rhs.section
      }
      
 }

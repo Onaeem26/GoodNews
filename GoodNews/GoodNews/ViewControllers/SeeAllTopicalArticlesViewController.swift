@@ -10,12 +10,23 @@ import UIKit
 
 class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDelegate {
     
-    var topic: String?
+    var topic: String?  {
+        didSet {
+            loadTopicData()
+        }
+    }
+    var domain: String?  {
+        didSet {
+            loadDomainData(page: self.page)
+        }
+    }
     let networkManager = NewsNetworkManager()
     var fetchedTopicArticles: [Article] = []
     var fetchedTopicSection: [ForYouSection] = []
     var collectionView : UICollectionView!
+    var page: Int = 1
     
+    var newDomainArticles: [Article] = []
     var dataSource: UICollectionViewDiffableDataSource<ForYouSection, Article>?
     var snapshot = NSDiffableDataSourceSnapshot<ForYouSection, Article>()
     
@@ -23,22 +34,21 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        
+        navigationController?.navigationBar.prefersLargeTitles = false
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         collectionView.delegate = self
-        collectionView.register(FeaturedArticleCell.self, forCellWithReuseIdentifier: FeaturedArticleCell.reuseIdentifier)
+        collectionView.register(MiscArticleCell.self, forCellWithReuseIdentifier: MiscArticleCell.reuseIdentifier)
         
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .white
         view.addSubview(self.collectionView)
         setupUIRefreshControl(with: collectionView)
-        loadData()
+      
         
     }
     
-    func loadData() {
+    func loadTopicData() {
         guard let topic = self.topic else { return }
-        print("Show articles of the following topic: ", topic )
         networkManager.fetchTopicalArticles(topics: [topic]) { [weak self] (section) in
             guard let strongSelf = self else { return }
             strongSelf.fetchedTopicSection = [section]
@@ -51,49 +61,76 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
         }
     }
     
+    func loadDomainData(page: Int) {
+        guard let domain = self.domain else { return }
+        networkManager.fetchDomainArticles(domains: [domain], page: page) { [weak self] (section) in
+            guard let strongSelf = self else { return }
+            if page > 1 {
+                strongSelf.newDomainArticles.append(contentsOf: section.articles)
+            }else {
+                strongSelf.fetchedTopicSection = [section]
+                strongSelf.newDomainArticles = section.articles
+            }
+            strongSelf.fetchedTopicArticles.append(contentsOf: section.articles)
+            DispatchQueue.main.async {
+                strongSelf.createDataSource()
+                strongSelf.reloadData()
+            }
+        }
+    }
+    
     func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with article: Article, for indexPath: IndexPath) -> T {
          guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseIdentifier, for: indexPath) as? T else {
              fatalError("Unable to dequeue \(cellType)")
          }
+        if indexPath.row == newDomainArticles.count - 1 {
+            page += 1
+            loadDomainData(page: page)
+        }
+  
+        cell.configure(with: article)
 
-         cell.configure(with: article)
          return cell
      }
-     
-    // func configurHeadrer
      
      func createDataSource() {
          dataSource = UICollectionViewDiffableDataSource<ForYouSection, Article>(collectionView: collectionView) { collectionView, indexPath, article in
              switch self.fetchedTopicSection[indexPath.section].section {
-             case .topical:
-                return self.configure(FeaturedArticleCell.self, with: article, for: indexPath)
             default:
-                return self.configure(FeaturedArticleCell.self, with: article, for: indexPath)
+                return self.configure(MiscArticleCell.self, with: article, for: indexPath)
             }
          }
      }
-     
+    
+
      func reloadData() {
-         
-         snapshot.appendSections(fetchedTopicSection)
-
-         for section in fetchedTopicSection {
-             snapshot.appendItems(section.articles, toSection: section)
-         }
-
-         dataSource?.apply(snapshot)
+ 
+        if page == 1 {
+            snapshot.appendSections(fetchedTopicSection)
+           for section in fetchedTopicSection {
+              snapshot.appendItems(section.articles, toSection: section)
+           }
+            dataSource?.apply(snapshot)
+            self.collectionView.refreshControl?.endRefreshing()
+        }else {
+            let lastItem = ((page - 1) * 20 - 1)
+            let lowerboundIndex = (((page - 1) * 20))
+            let upperBoundIndex = ((page * 20) - 1)
+            let itemsToBeInserted = Array(newDomainArticles[lowerboundIndex...upperBoundIndex])
+            snapshot.insertItems(itemsToBeInserted, afterItem: snapshot.itemIdentifiers[lastItem])
+            
+            dataSource?.apply((snapshot), animatingDifferences: false)
+          }
      }
-     
+    
      func createCompositionalLayout() -> UICollectionViewLayout {
          let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
      
              let section = self.fetchedTopicSection[sectionIndex]
 
              switch section.section {
-             case .topical:
-                 return self.createFeaturedSection(using: section)
              default:
-                return self.createFeaturedSection(using: section)
+                return self.createMiscSection(using: section)
              }
          }
 
@@ -103,39 +140,24 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
          return layout
      }
      
+  
     
-    func createFeaturedSection(using section: ForYouSection) -> NSCollectionLayoutSection {
+    func createMiscSection(using section: ForYouSection) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let itemSize2 = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1))
-        let layoutItem2 = NSCollectionLayoutItem(layoutSize: itemSize2)
-        
-        
-        let subGroup1Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(300))
-        let subGroup1 = NSCollectionLayoutGroup.horizontal(layoutSize: subGroup1Size, subitems: [layoutItem])
-        
-        let subGroup2Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(250))
-        let subGroup2 = NSCollectionLayoutGroup.horizontal(layoutSize: subGroup2Size, subitems: [layoutItem2])
-        subGroup2.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 5)
-        
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(550))
-        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [subGroup1, subGroup2])
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top:5, leading: 5, bottom: 0, trailing: 5)
+
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(110))
+        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
 
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-        
-       // layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
-//
-//        let layoutSectionHeader = createSectionHeader()
-//        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
-    
+
         return layoutSection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Index Path Tapped", indexPath.row)
         let section = fetchedTopicSection[indexPath.section].articles
-        print("Article",section[indexPath.row].title)
         let destWebViewController = DetailArticleWebViewController()
         destWebViewController.article = section[indexPath.row]
         destWebViewController.hidesBottomBarWhenPushed = true
@@ -152,20 +174,40 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
     }
     
     @objc func handleRefresh() {
-        guard let topic = self.topic else { return }
-        networkManager.fetchTopicalArticles(topics: [topic]) { [weak self] (section) in
-            guard let strongSelf = self else { return }
-            strongSelf.fetchedTopicSection = [section]
-            DispatchQueue.main.async {
-                strongSelf.snapshot.deleteAllItems()
-                strongSelf.snapshot.appendSections(strongSelf.fetchedTopicSection)
-                for section in strongSelf.fetchedTopicSection {
-                    strongSelf.snapshot.appendItems(section.articles, toSection: section)
-                }
-                strongSelf.dataSource?.apply(strongSelf.snapshot, animatingDifferences: true)
+       
+        if let topic = self.topic {
+            networkManager.fetchTopicalArticles(topics: [topic]) { [weak self] (section) in
+                    guard let strongSelf = self else { return }
+                    strongSelf.fetchedTopicSection = [section]
+                    DispatchQueue.main.async {
+                        strongSelf.snapshot.deleteAllItems()
+                        strongSelf.snapshot.appendSections(strongSelf.fetchedTopicSection)
+                        for section in strongSelf.fetchedTopicSection {
+                            strongSelf.snapshot.appendItems(section.articles, toSection: section)
+                        }
+                        strongSelf.dataSource?.apply(strongSelf.snapshot, animatingDifferences: true)
 
-                strongSelf.collectionView.refreshControl?.endRefreshing()
+                        strongSelf.collectionView.refreshControl?.endRefreshing()
+                    }
+                }
+        }else if let domain = self.domain {
+            networkManager.fetchDomainArticles(domains: [domain], page: 1) { [weak self] (section) in
+                  guard let strongSelf = self else { return }
+                  strongSelf.fetchedTopicSection = [section]
+                  strongSelf.newDomainArticles = section.articles
+                  strongSelf.page = 1
+                  DispatchQueue.main.async {
+                      strongSelf.snapshot.deleteAllItems()
+                      strongSelf.snapshot.appendSections(strongSelf.fetchedTopicSection)
+                      for section in strongSelf.fetchedTopicSection {
+                          strongSelf.snapshot.appendItems(section.articles, toSection: section)
+                      }
+                      strongSelf.dataSource?.apply(strongSelf.snapshot, animatingDifferences: true)
+                      strongSelf.collectionView.refreshControl?.endRefreshing()
+                  }
+                }
             }
-        }
     }
 }
+
+

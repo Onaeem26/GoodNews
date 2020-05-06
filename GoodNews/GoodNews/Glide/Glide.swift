@@ -470,8 +470,6 @@ class Glide : NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate {
         
         let velocity = panGestureRecognzier.velocity(in: cardViewController.view)
         detectedScrollView.panGestureRecognizer.isEnabled = true
-
-     //   detectedScrollView.delegate = self
         
         if otherGestureRecognizer == detectedScrollView.panGestureRecognizer {
             switch currentState {
@@ -501,19 +499,5 @@ class Glide : NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate {
         return false
     }
     
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//            let contentOffset = scrollView.contentOffset.y
-//        print(contentOffset)
-//            //guard let cardViewController = self.card as? UINavigationController else { return  }
-//
-////           if contentOffset < 0.0 {
-////               shouldHandleGesture = true
-////              // scrollView.isScrollEnabled = false
-////               scrollView.isScrollEnabled = true
-////           }
-//
-//
-//
-//    }
 }
 

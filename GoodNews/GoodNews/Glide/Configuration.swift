@@ -11,7 +11,7 @@ import UIKit
 class Configuration: GlideConfiguration {
     var segmented: Bool = true
     var segmentHeightDictionary: [State : CGFloat] = [State.open : UIScreen.main.bounds.height - 60,
-                                                      State.compressed : 350,
+                                                      State.compressed : 420,
                                                       State.closed : 0]
     
     var concreteDimension: GlideConcreteDimension = .fullScreen
