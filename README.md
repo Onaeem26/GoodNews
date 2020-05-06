@@ -10,6 +10,20 @@
   <img width="1200" height="600" src="https://github.com/Onaeem26/GoodNews/blob/master/gnpromobanner.jpg">
 </p>
 
+<h2> GoodNews V1.2 Update: </h2>
+I am excited to announce the release of GoodNews Version 1.2. V1.2 brings some neat new features, along with refining some of the existing ones. 
+
+GoodNews V1.2 brings following new features / changes: 
+
+1. Now you can fetch news from specific websites / domains that aren't available in the sources list. Just tap the `+` button on the top right and choose `Add Domain`. Write the domain name, <b>without</b> `http://`. For example, `9to5mac.com`. (The name of the site with `.com`).
+
+2. The `For You` collection view layout is changed. Instead of showing the topical articles, you now get to see all the latest news from the specific websites/domains that you have added. I have also changed the layout of this section, and created a 2x2 grid that scrolls horizontally. 
+
+3. If you go to `Sources` tab and tap any of the added domains, it will show you all the latest articles from that website. With v1.2, I have implemented infinite scrolling / pagination. As you keep scrolling, you keep on getting more and more articles.  
+
+4. Tapping on any article, takes you to the respective website. The browser gets more features with website loading progress indicator, reload button. 
+
+
 
 <h3>GoodNews is a simple and minimal news app for iPhone. The app uses <a href="https://newsapi.org">NewsAPI</a> to fetch latest news.</h3>
 
