@@ -4,7 +4,6 @@
   <img width="250" height="250" src="https://github.com/Onaeem26/GoodNews/blob/master/GNLogoSmall.png">
 </p>
 <h1 align="center">GoodNews</h1>
-<h4 align="center">v1.2</h4>
 
 ![iOS Build](https://camo.githubusercontent.com/c86345972e600bcb5df94a29e717be86260736d7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f694f532d31332e302b2d626c75652e737667) ![Swift Version](https://camo.githubusercontent.com/667f6dfa9824258f1bea9b0cefb960b3f983092f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f53776966742d352e312d627269676874677265656e2e737667) 
  <p align="center">
