@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 
-class DetailArticleWebViewController: UIViewController, WKNavigationDelegate {
+class DetailArticleWebViewController: UIViewController, WKNavigationDelegate, UIScrollViewDelegate {
     
     var article: Article? = nil
     var webView: WKWebView!
@@ -31,9 +31,13 @@ class DetailArticleWebViewController: UIViewController, WKNavigationDelegate {
         webView.allowsBackForwardNavigationGestures = true
         self.navigationController?.navigationBar.tintColor = GNUIConfiguration.textColor
         
-          
-        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleBackButton))
+        self.navigationItem.rightBarButtonItem = refresh
+        self.navigationItem.leftBarButtonItem = doneButton
+        
+        self.navigationItem.setHidesBackButton(true, animated: false)
+   
         progressView = UIProgressView(progressViewStyle: .default)
         let navBarHeight = navigationController?.navigationBar.frame.height
         let navBarWidth = navigationController?.navigationBar.frame.width
@@ -41,11 +45,12 @@ class DetailArticleWebViewController: UIViewController, WKNavigationDelegate {
            
         self.navigationController?.navigationBar.addSubview(progressView)
         
-        toolbarItems = [spacer, refresh]
         navigationController?.isToolbarHidden = false
         
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         
+        webView.scrollView.delegate = self
+        navigationController?.isToolbarHidden = true
     }
     
     override func loadView() {
@@ -56,10 +61,12 @@ class DetailArticleWebViewController: UIViewController, WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.title = webView.title
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.isToolbarHidden = true
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
         self.progressView.isHidden = true
     }
     
@@ -69,7 +76,15 @@ class DetailArticleWebViewController: UIViewController, WKNavigationDelegate {
             
             if progressView.progress == 1 {
                 progressView.isHidden = true
+            }else {
+                progressView.isHidden = false
             }
+            
         }
     }
+    
+    @objc func handleBackButton() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
 }

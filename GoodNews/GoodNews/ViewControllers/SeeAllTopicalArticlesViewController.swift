@@ -94,10 +94,11 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
      }
      
      func createDataSource() {
-         dataSource = UICollectionViewDiffableDataSource<ForYouSection, Article>(collectionView: collectionView) { collectionView, indexPath, article in
-             switch self.fetchedTopicSection[indexPath.section].section {
+         dataSource = UICollectionViewDiffableDataSource<ForYouSection, Article>(collectionView: collectionView) { [weak self] collectionView, indexPath, article in
+            guard let strongSelf = self else { return nil }
+             switch strongSelf.fetchedTopicSection[indexPath.section].section {
             default:
-                return self.configure(MiscArticleCell.self, with: article, for: indexPath)
+                return strongSelf.configure(MiscArticleCell.self, with: article, for: indexPath)
             }
          }
      }
@@ -124,13 +125,13 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
      }
     
      func createCompositionalLayout() -> UICollectionViewLayout {
-         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-     
-             let section = self.fetchedTopicSection[sectionIndex]
+         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
+             guard let strongSelf = self else { return nil}
+             let section = strongSelf.fetchedTopicSection[sectionIndex]
 
              switch section.section {
              default:
-                return self.createMiscSection(using: section)
+                return strongSelf.createMiscSection(using: section)
              }
          }
 
@@ -208,6 +209,10 @@ class SeeAllTopicalArticlesViewController : UIViewController, UICollectionViewDe
                   }
                 }
             }
+    }
+    
+    deinit {
+        print("Deinitilaize data")
     }
 }
 

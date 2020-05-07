@@ -23,7 +23,7 @@ class SourcesViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationController?.navigationBar.largeTitleTextAttributes  = textAttributes
         self.navigationController?.navigationBar.tintColor = GNUIConfiguration.textColor
         view.backgroundColor = .white

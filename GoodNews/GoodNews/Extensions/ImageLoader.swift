@@ -22,7 +22,8 @@ class ImageLoader {
         }
         
         let uuid = UUID()
-        
+    
+    
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             
             defer {self.runningRequests.removeValue(forKey: uuid) }
@@ -33,7 +34,7 @@ class ImageLoader {
             }
             
             guard let error = error else {
-                print("Difficulty in loading picture")
+              //  print("Difficulty in loading picture")
                 return
             }
             
@@ -55,4 +56,9 @@ class ImageLoader {
         runningRequests[uuid]?.cancel()
         runningRequests.removeValue(forKey: uuid)
     }
+    
+    func removeMemoryCache() {
+        self.loadedImages.removeAll()
+    }
+
 }

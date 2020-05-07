@@ -14,7 +14,11 @@ class UIImageLoader {
     private let imageLoader = ImageLoader()
     private var uuidMap = [UIImageView: UUID]()
     
-    private init() {}
+    private init() {
+        NotificationCenter.default.addObserver(forName: UIApplication.didReceiveMemoryWarningNotification, object: nil, queue: nil) { [weak self] notification in
+            self?.clearCache()
+         }
+    }
     
     func load(_ url: URL, for imageView: UIImageView) {
         let token = imageLoader.loadImage(url) { result in
@@ -43,5 +47,9 @@ class UIImageLoader {
         imageLoader.cancelLoad(uuid)
         uuidMap.removeValue(forKey: imageView)
       }
+    }
+    
+    func clearCache() {
+        self.imageLoader.removeMemoryCache()
     }
 }
